@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Florissa's World Trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0a12;
+    --card: #15101e;
+    --border: rgba(255,255,255,0.07);
+    --text: #f4eef8;
+    --muted: #9b92a8;
+    --accent: #e884c4;
+    --accent2: #a78bfa;
+    --accent3: #f9c4e1;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,10,18,0.90); backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px;
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--accent); cursor: pointer; letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 0.2rem; flex-wrap: wrap; }
+  .nav-links button {
+    background: none; border: none; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.38rem 0.65rem; border-radius: 4px; cursor: pointer; transition: color 0.2s, background 0.2s;
+  }
+  .nav-links button:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-links button.active { color: var(--accent); }
+
+  .page { display: none; padding-top: 60px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* HOME HERO */
+  .hero {
+    position: relative; overflow: hidden;
+    height: calc(100vh - 60px); min-height: 540px;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 2rem;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 55%, rgba(232,132,196,0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 20% 25%, rgba(167,139,250,0.09) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 35% at 85% 70%, rgba(249,196,225,0.06) 0%, transparent 50%);
+  }
+  .hero-dots {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: radial-gradient(circle, rgba(232,132,196,0.9) 1px, transparent 1px);
+    background-size: 38px 38px;
+  }
+  .hero-kpop-ticker {
+    position: absolute; top: 14%; left: 0; right: 0;
+    font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+    opacity: 0.1; color: var(--accent); white-space: nowrap; text-align: center;
+    font-weight: 500; user-select: none;
+  }
+  .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; position: relative; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.2rem, 9vw, 7rem); font-weight: 700; line-height: 0.92; color: var(--text); position: relative; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub { margin-top: 1.5rem; max-width: 460px; font-size: 0.96rem; color: var(--muted); line-height: 1.75; position: relative; }
+  .hero-pill {
+    display: inline-block; margin-top: 1.5rem; position: relative;
+    border: 1px solid rgba(232,132,196,0.35); border-radius: 20px;
+    padding: 0.35rem 1.1rem; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent3);
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
+  .scroll-hint::after { content: ''; width: 1px; height: 36px; background: linear-gradient(to bottom, var(--accent), transparent); animation: sl 2s ease-in-out infinite; }
+  @keyframes sl { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  /* CARDS */
+  .cards-section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.55rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 4vw, 2.9rem); font-weight: 700; margin-bottom: 2.5rem; color: var(--text); }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.1rem; }
+  .country-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    cursor: pointer; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; position: relative;
+  }
+  .country-card.featured { border-color: rgba(232,132,196,0.38); box-shadow: 0 0 28px rgba(232,132,196,0.09); }
+  .country-card.featured::before {
+    content: '★ Must Visit'; position: absolute; top: 10px; right: 10px; z-index: 2;
+    background: rgba(232,132,196,0.15); border: 1px solid rgba(232,132,196,0.38);
+    color: var(--accent3); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.2rem 0.55rem; border-radius: 10px;
+  }
+  .country-card:hover { transform: translateY(-6px); border-color: rgba(232,132,196,0.45); box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+  .card-flag { width: 100%; height: 118px; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); transition: transform 0.3s; }
+  .country-card:hover .card-flag { transform: scale(1.08); }
+  .card-body { padding: 1.2rem; }
+  .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .card-tagline { font-size: 0.79rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.9rem; }
+  .card-cta { font-size: 0.67rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 0.4rem; }
+  .card-cta::after { content: '→'; transition: transform 0.2s; }
+  .country-card:hover .card-cta::after { transform: translateX(4px); }
+
+  /* ABOUT */
+  .about-section { background: var(--card); border-top: 1px solid var(--border); padding: 5rem 2rem; text-align: center; }
+  .about-inner { max-width: 580px; margin: 0 auto; }
+  .about-inner h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; margin-bottom: 1rem; }
+  .about-inner p { color: var(--muted); line-height: 1.85; font-size: 0.93rem; }
+  .about-inner p + p { margin-top: 0.75rem; }
+
+  /* COUNTRY HERO */
+  .country-hero { position: relative; overflow: hidden; height: 300px; display: flex; align-items: flex-end; padding: 2.5rem 3rem; }
+  .country-hero-bg { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 100%); }
+  .country-hero-emoji { position: absolute; right: 3rem; top: 50%; transform: translateY(-50%); font-size: 8rem; opacity: 0.12; user-select: none; pointer-events: none; }
+  .country-hero-content { position: relative; }
+  .back-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.35rem 0.85rem; border-radius: 4px; cursor: pointer; margin-bottom: 0.85rem;
+    display: inline-block; transition: color 0.2s, border-color 0.2s;
+  }
+  .back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+  .country-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; line-height: 1; margin-bottom: 0.4rem; }
+  .country-hero-sub { color: var(--muted); font-size: 0.95rem; font-style: italic; }
+
+  /* KPOP BANNER */
+  .kpop-banner {
+    background: linear-gradient(90deg, rgba(232,132,196,0.1) 0%, rgba(167,139,250,0.09) 50%, rgba(232,132,196,0.07) 100%);
+    border: 1px solid rgba(232,132,196,0.22); border-radius: 10px;
+    padding: 1rem 1.4rem; margin-bottom: 2rem;
+    display: flex; align-items: flex-start; gap: 1rem;
+  }
+  .kpop-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .kpop-text h4 { font-size: 0.67rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+  .kpop-text p { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+  /* CONTENT */
+  .country-content { max-width: 860px; margin: 0 auto; padding: 3.5rem 2rem; }
+  .diary-block {
+    background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0; padding: 1.7rem 1.7rem 1.7rem 2.1rem; margin-bottom: 2.5rem;
+    font-size: 0.93rem; line-height: 1.88; color: #c2b8cc;
+  }
+  .diary-block h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--accent3); margin-bottom: 0.85rem; }
+  .diary-block p + p { margin-top: 0.85rem; }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 1.1rem; margin-bottom: 2.2rem; }
+  .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.35rem; }
+  .info-card h3 { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent2); margin-bottom: 0.85rem; }
+  .info-card ul { list-style: none; }
+  .info-card ul li { padding: 0.52rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; line-height: 1.6; color: #ada3ba; }
+  .info-card ul li:last-child { border-bottom: none; }
+  .info-card ul li strong { color: var(--text); font-weight: 500; }
+  .full-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.55rem; margin-bottom: 1.1rem; }
+  .full-card h3 { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
+  .full-card p { font-size: 0.88rem; color: #ada3ba; line-height: 1.87; }
+
+  footer { text-align: center; padding: 2rem; font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 4rem; }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .country-hero { padding: 1.5rem; height: 240px; }
+    .country-hero-emoji { font-size: 5rem; right: 1rem; }
+    .country-content { padding: 2rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">✈ Florissa's World Trip</div>
+  <div class="nav-links">
+    <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
+    <button onclick="showPage('korea')" id="nav-korea">Korea</button>
+    <button onclick="showPage('japan')" id="nav-japan">Japan</button>
+    <button onclick="showPage('thailand')" id="nav-thailand">Thailand</button>
+    <button onclick="showPage('australia')" id="nav-australia">Australia</button>
+    <button onclick="showPage('philippines')" id="nav-philippines">Philippines</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-dots"></div>
+    <div class="hero-kpop-ticker">♪ BTS · BLACKPINK · TWICE · aespa · Stray Kids · NewJeans · IVE · SEVENTEEN ♪</div>
+    <p class="hero-eyebrow">By Florissa — A fictional world trip</p>
+    <h1>My<br><em>World Trip</em></h1>
+    <p class="hero-sub">Hello! I'm Florissa and this is my fictional journey across five incredible countries in Asia and Oceania.</p>
+    <span class="hero-pill">🎵 K-pop fan edition</span>
+    <div class="scroll-hint">Explore</div>
+  </div>
+
+  <section class="cards-section">
+    <p class="section-label">The destinations</p>
+    <h2 class="section-title">Five countries, one adventure</h2>
+    <div class="cards-grid">
+      <div class="country-card featured" onclick="showPage('korea')">
+        <div class="card-flag">🇰🇷</div>
+        <div class="card-body">
+          <div class="card-name">South Korea</div>
+          <div class="card-tagline">K-pop, ancient palaces & neon-lit Seoul</div>
+          <div class="card-cta">Explore</div>
+        </div>
+      </div>
+      <div class="country-card" onclick="showPage('japan')">
+        <div class="card-flag">🇯🇵</div>
+        <div class="card-body">
+          <div class="card-name">Japan</div>
+          <div class="card-tagline">Tradition meets futuristic cities</div>
+          <div class="card-cta">Explore</div>
+        </div>
+      </div>
+      <div class="country-card" onclick="showPage('thailand')">
+        <div class="card-flag">🇹🇭</div>
+        <div class="card-body">
+          <div class="card-name">Thailand</div>
+          <div class="card-tagline">Golden temples & tropical beaches</div>
+          <div class="card-cta">Explore</div>
+        </div>
+      </div>
+      <div class="country-card" onclick="showPage('australia')">
+        <div class="card-flag">🇦🇺</div>
+        <div class="card-body">
+          <div class="card-name">Australia</div>
+          <div class="card-tagline">Wildlife, outback & Great Barrier Reef</div>
+          <div class="card-cta">Explore</div>
+        </div>
+      </div>
+      <div class="country-card" onclick="showPage('philippines')">
+        <div class="card-flag">🇵🇭</div>
+        <div class="card-body">
+          <div class="card-name">Philippines</div>
+          <div class="card-tagline">7,641 islands of nature & culture</div>
+          <div class="card-cta">Explore</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-inner">
+      <h2>About Me</h2>
+      <p>Hi, my name is Florissa! I'm a huge K-pop fan and I created this website as part of my English assignment, where I imagine a fictional trip around the world.</p>
+      <p>I chose countries that are close to my heart — especially South Korea, the home of K-pop. I hope you enjoy exploring each destination as much as I enjoyed writing about them!</p>
+    </div>
+  </section>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<!-- KOREA -->
+<div id="page-korea" class="page">
+  <div class="country-hero" style="background: linear-gradient(135deg, #1a0828 0%, #36104e 50%, #0f0a20 100%);">
+    <div class="country-hero-bg"></div>
+    <div class="country-hero-emoji">🇰🇷</div>
+    <div class="country-hero-content">
+      <button class="back-btn" onclick="showPage('home')">← Back to home</button>
+      <h1>🇰🇷 South Korea</h1>
+      <p class="country-hero-sub">Where ancient palaces meet K-pop dreams</p>
+    </div>
+  </div>
+  <div class="country-content">
+    <div class="kpop-banner">
+      <div class="kpop-icon">🎤</div>
+      <div class="kpop-text">
+        <h4>K-pop Connection</h4>
+        <p>South Korea is the birthplace of K-pop — one of the world's biggest music phenomena. Groups like BTS, BLACKPINK, TWICE, aespa and Stray Kids all come from here. Seoul is full of idol cafes, merch stores, music show venues, and HYBE's own museum that you can actually visit!</p>
+      </div>
+    </div>
+    <div class="diary-block">
+      <h2>📖 Travel Diary</h2>
+      <p>The moment I landed in Seoul, I felt like I had stepped into a music video. Everything sparkled — the lights of Gangnam, the street food stalls in Myeongdong, the giant screens showing K-pop performances. I kept pinching myself.</p>
+      <p>I visited the Gyeongbokgung Palace at sunrise. The mist hung low over the stone courtyard and it felt like centuries had melted away. Right outside the palace gate, a K-pop fan shop was already opening. That contrast was so perfectly Seoul.</p>
+      <p>On my last evening I stumbled onto a small outdoor stage where a rookie group was performing for a crowd of screaming fans. I stayed until the lights went out. Best night of the entire trip.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🏛️ Tourist Attractions</h3>
+        <ul>
+          <li><strong>Gyeongbokgung Palace</strong> – The largest royal palace of the Joseon dynasty, right in the heart of Seoul.</li>
+          <li><strong>Bukchon Hanok Village</strong> – A historic neighbourhood of traditional Korean wooden houses.</li>
+          <li><strong>N Seoul Tower</strong> – Iconic tower on Namsan Hill, famous for love padlocks and panoramic views.</li>
+          <li><strong>Jeju Island</strong> – Volcanic island with waterfalls, lava tubes and stunning coastlines.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎤 K-pop Spots in Seoul</h3>
+        <ul>
+          <li><strong>HYBE Insight</strong> – The official BTS museum and exhibition space in Yongsan, open to fans worldwide.</li>
+          <li><strong>SM Town COEX</strong> – SM Entertainment's flagship store with merch from EXO, aespa, NCT and more.</li>
+          <li><strong>Hongdae Street</strong> – The youth district where busking idols and street performances happen every weekend.</li>
+          <li><strong>Music Bank & Inkigayo</strong> – Weekly live music shows you can apply to attend as an audience member!</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📜 Historical Facts</h3>
+        <ul>
+          <li><strong>Joseon Dynasty</strong> – Korea was ruled by the Joseon dynasty from 1392 to 1897, guided by Confucian values.</li>
+          <li><strong>Japanese Occupation</strong> – From 1910 to 1945, Korea was under Japanese rule, leaving a deep mark on its culture.</li>
+          <li><strong>Korean War</strong> – The 1950–1953 war divided the peninsula into North and South Korea.</li>
+          <li><strong>Economic Miracle</strong> – In decades, South Korea grew into a global tech and culture powerhouse.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎊 Holidays & Traditions</h3>
+        <ul>
+          <li><strong>Chuseok</strong> – The Korean harvest festival, similar to Thanksgiving. Families reunite and honour ancestors.</li>
+          <li><strong>Seollal</strong> – Korean Lunar New Year, celebrated with traditional dress, games and food.</li>
+          <li><strong>Lantern Festival</strong> – Thousands of colourful lanterns are released during Buddha's Birthday celebrations.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="full-card">
+      <h3>🌄 Landscape</h3>
+      <p>South Korea is a mountainous country where about 70% of the land is covered in forested hills. The seasons are vivid: cherry blossoms in spring, lush green rice fields in summer, fiery red-and-orange forests in autumn, and snow-dusted mountain peaks in winter. The coastline is dotted with scenic islands, and Jeju Island — a UNESCO Biosphere Reserve — is a volcanic gem in the south.</p>
+    </div>
+    <div class="full-card">
+      <h3>🎎 Culture</h3>
+      <p>Korean culture is rooted in Confucian values — respect for elders, strong community bonds and dedication to hard work. At the same time, Korea conquered the world with the Hallyu Wave: K-pop, K-dramas, films like Parasite, Korean skincare and incredible food. Eating together is a social ritual, street food is legendary, and the cafe culture is something else entirely.</p>
+    </div>
+  </div>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<!-- JAPAN -->
+<div id="page-japan" class="page">
+  <div class="country-hero" style="background: linear-gradient(135deg, #200a0a 0%, #420f0f 50%, #180814 100%);">
+    <div class="country-hero-bg"></div>
+    <div class="country-hero-emoji">🇯🇵</div>
+    <div class="country-hero-content">
+      <button class="back-btn" onclick="showPage('home')">← Back to home</button>
+      <h1>🇯🇵 Japan</h1>
+      <p class="country-hero-sub">Where silence and chaos exist side by side</p>
+    </div>
+  </div>
+  <div class="country-content">
+    <div class="kpop-banner">
+      <div class="kpop-icon">🎵</div>
+      <div class="kpop-text">
+        <h4>K-pop Connection</h4>
+        <p>Japan is one of K-pop's biggest markets! Many groups release Japanese versions of their songs and perform sold-out shows in Tokyo Dome and Osaka. You'll find K-pop merchandise stores all over Shibuya and Akihabara — and Japanese fans are known for their incredible dedication and fan projects.</p>
+      </div>
+    </div>
+    <div class="diary-block">
+      <h2>📖 Travel Diary</h2>
+      <p>Arriving in Japan, everything felt completely different from home. The lights, the speed of the city and the silence of the temples all seemed unreal — like walking into two worlds at once.</p>
+      <p>In Tokyo I stood in the middle of Shibuya Crossing. Hundreds of people moved in every direction, yet somehow it was perfectly orderly. I felt small but incredibly alive.</p>
+      <p>The most magical moment was seeing Mount Fuji from the shore of Lake Kawaguchiko at dawn. It looked like a painting, and I just stood there completely still, watching the light change over the water.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🏯 Tourist Attractions</h3>
+        <ul>
+          <li><strong>Mount Fuji</strong> – Japan's highest and most iconic mountain, visible from Tokyo on a clear day.</li>
+          <li><strong>Fushimi Inari</strong> – Famous Kyoto shrine with thousands of bright red torii gates winding through the hills.</li>
+          <li><strong>Shibuya Crossing</strong> – The world's most famous pedestrian crossing in the heart of Tokyo.</li>
+          <li><strong>Arashiyama Bamboo Forest</strong> – A peaceful bamboo grove in Kyoto that glows in the morning light.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📜 Historical Facts</h3>
+        <ul>
+          <li><strong>Samurai Era</strong> – For centuries, samurai warriors governed Japan under a strict code of honour called Bushido.</li>
+          <li><strong>Edo Period</strong> – From 1603 to 1868, Japan experienced a long era of peace and isolation under the Tokugawa shogunate.</li>
+          <li><strong>Meiji Restoration</strong> – After 1868, Japan rapidly modernised and opened up to the outside world.</li>
+          <li><strong>Atomic Bombs, 1945</strong> – Hiroshima and Nagasaki were devastated, leading to Japan's surrender and the end of WWII.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎊 Holidays & Traditions</h3>
+        <ul>
+          <li><strong>Hanami</strong> – The cherry blossom festival in spring: picnicking under blooming pink trees to celebrate fleeting beauty.</li>
+          <li><strong>Obon Festival</strong> – A Buddhist summer tradition honouring ancestors, with traditional Bon Odori dances.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="full-card">
+      <h3>🌋 Landscape</h3>
+      <p>Japan is made up of thousands of islands — predominantly mountainous, with volcanic peaks, dense forests and dramatic coastlines. About 73% of the land is uninhabited forest and mountain. Despite this, Japan is also home to some of the world's most densely populated and technologically advanced cities, creating a striking contrast between wild nature and urban life.</p>
+    </div>
+    <div class="full-card">
+      <h3>🎎 Culture</h3>
+      <p>Respect, politeness and harmony are at the heart of Japanese culture. The tea ceremony represents mindfulness and calm. Anime and manga have conquered the world. Japan uniquely weaves ancient traditions — temples, festivals, kimonos — with cutting-edge technology and bold modern fashion. The food culture, from sushi to ramen, is taken extremely seriously and is an art form in itself.</p>
+    </div>
+  </div>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<!-- THAILAND -->
+<div id="page-thailand" class="page">
+  <div class="country-hero" style="background: linear-gradient(135deg, #0a1a08 0%, #1b3a10 50%, #1a180a 100%);">
+    <div class="country-hero-bg"></div>
+    <div class="country-hero-emoji">🇹🇭</div>
+    <div class="country-hero-content">
+      <button class="back-btn" onclick="showPage('home')">← Back to home</button>
+      <h1>🇹🇭 Thailand</h1>
+      <p class="country-hero-sub">The land of smiles, gold and jungle</p>
+    </div>
+  </div>
+  <div class="country-content">
+    <div class="kpop-banner">
+      <div class="kpop-icon">🌟</div>
+      <div class="kpop-text">
+        <h4>K-pop Connection</h4>
+        <p>Thailand has a massive K-pop fan community! Most famously, Lisa from BLACKPINK is Thai and is one of the most iconic K-pop idols in the world. Thai fans are known for organising spectacular fan projects, streaming parties and huge concert events in Bangkok. K-pop culture is everywhere in the city!</p>
+      </div>
+    </div>
+    <div class="diary-block">
+      <h2>📖 Travel Diary</h2>
+      <p>Thailand overwhelmed all my senses at once. The heat, the noise of tuk-tuks weaving through traffic, the smell of lemongrass and chilli drifting from every alley — I was completely in love from the very first minute.</p>
+      <p>At Wat Pho temple, I stood before the enormous golden reclining Buddha and felt genuinely small. The gilded tiles, the orange robes of monks, and the soft ring of prayer bells made everything feel sacred and dreamlike.</p>
+      <p>On Koh Samui I swam in water so clear and warm it didn't seem real. Watching the sky turn red and purple over the sea while eating fresh mango sticky rice — honestly one of the best moments of my life.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🏛️ Tourist Attractions</h3>
+        <ul>
+          <li><strong>Wat Phra Kaew</strong> – The Temple of the Emerald Buddha in Bangkok, the most sacred Buddhist site in Thailand.</li>
+          <li><strong>Chiang Mai</strong> – Northern city surrounded by temples, hill tribes and elephant sanctuaries.</li>
+          <li><strong>Phi Phi Islands</strong> – Spectacular limestone cliffs, turquoise water and world-famous snorkelling spots.</li>
+          <li><strong>Ayutthaya</strong> – Ruined ancient capital full of Buddhist temples and weathered stone Buddhas.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📜 Historical Facts</h3>
+        <ul>
+          <li><strong>Never colonised</strong> – Thailand is the only country in Southeast Asia that was never under European colonial rule — a great source of national pride.</li>
+          <li><strong>Kingdom of Ayutthaya</strong> – From 1350 to 1767, a powerful kingdom that traded widely with Europe and Asia.</li>
+          <li><strong>Modern Monarchy</strong> – Thailand is a constitutional monarchy; the king is deeply respected and criticism of the royal family is illegal.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎊 Holidays & Traditions</h3>
+        <ul>
+          <li><strong>Songkran</strong> – Thai New Year in April, celebrated with the world's biggest water fight in the streets.</li>
+          <li><strong>Loy Krathong</strong> – Festival where lit floating baskets are released on water to honour the water goddess.</li>
+          <li><strong>Yi Peng</strong> – Lantern festival in Chiang Mai where thousands of glowing sky lanterns light up the night.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="full-card">
+      <h3>🌴 Landscape</h3>
+      <p>Thailand has an incredible variety of landscapes: tropical rainforests in the north, wide rice plains in the central region, and limestone islands and white sand beaches in the south. The country has two coastlines — the Gulf of Thailand and the Andaman Sea — and over 1,400 islands. The north is lush and cool; the south is tropical and warm all year round.</p>
+    </div>
+    <div class="full-card">
+      <h3>🎎 Culture</h3>
+      <p>Buddhism is the soul of Thailand. Monks in saffron robes are a constant part of street life. Key social rules include showing respect for elders, keeping your feet low (feet are considered unclean) and treating the head as sacred. Thai cuisine is world-famous — pad thai, green curry, tom yum and mango sticky rice are just the beginning of a vast and incredibly flavourful food culture.</p>
+    </div>
+  </div>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<!-- AUSTRALIA -->
+<div id="page-australia" class="page">
+  <div class="country-hero" style="background: linear-gradient(135deg, #1a0e00 0%, #3d2200 50%, #1a1500 100%);">
+    <div class="country-hero-bg"></div>
+    <div class="country-hero-emoji">🇦🇺</div>
+    <div class="country-hero-content">
+      <button class="back-btn" onclick="showPage('home')">← Back to home</button>
+      <h1>🇦🇺 Australia</h1>
+      <p class="country-hero-sub">The continent at the edge of the world</p>
+    </div>
+  </div>
+  <div class="country-content">
+    <div class="kpop-banner">
+      <div class="kpop-icon">🦘</div>
+      <div class="kpop-text">
+        <h4>K-pop Connection</h4>
+        <p>Australia has one of the most dedicated K-pop fan bases outside of Asia! BTS, BLACKPINK and Stray Kids have all performed sold-out shows in Sydney and Melbourne. Australian fan clubs are incredibly active, and K-pop events, dance competitions and fan meets happen regularly in major cities across the country.</p>
+      </div>
+    </div>
+    <div class="diary-block">
+      <h2>📖 Travel Diary</h2>
+      <p>Australia started with Sydney Harbour at golden hour — the Opera House glowing white against a deep blue sky, the Harbour Bridge reflected in the water below. It felt like a postcard come to life.</p>
+      <p>But nothing prepared me for the Outback. I drove for hours without seeing a single tree or building. Then Uluru appeared — a giant red monolith rising from the flat earth, glowing like an ember as the sun set. I sat in silence and felt the weight of 65,000 years of history.</p>
+      <p>Snorkelling on the Great Barrier Reef was like visiting another planet. The colours, the coral, the fish — things so beautiful they almost made me cry underwater. Almost.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🏛️ Tourist Attractions</h3>
+        <ul>
+          <li><strong>Uluru (Ayers Rock)</strong> – Sacred red sandstone rock in the Outback, of immense spiritual importance to the Aboriginal Anangu people.</li>
+          <li><strong>Great Barrier Reef</strong> – The world's largest coral reef ecosystem, visible from space.</li>
+          <li><strong>Sydney Opera House</strong> – Iconic UNESCO-listed building and symbol of modern Australia.</li>
+          <li><strong>Daintree Rainforest</strong> – One of Earth's oldest tropical rainforests, home to species found nowhere else.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📜 Historical Facts</h3>
+        <ul>
+          <li><strong>Aboriginal Culture</strong> – Indigenous Australians have lived here for over 65,000 years — the oldest living culture on Earth.</li>
+          <li><strong>British Colony</strong> – In 1788, the British established a penal colony at Sydney Cove, the beginning of modern Australia.</li>
+          <li><strong>Gold Rush</strong> – In the 1850s, gold seekers flooded in from around the world, rapidly expanding the population.</li>
+          <li><strong>Federation, 1901</strong> – Six colonies united to form the Commonwealth of Australia with its own constitution.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎊 Holidays & Traditions</h3>
+        <ul>
+          <li><strong>Australia Day</strong> – January 26th commemorates the British landing, though increasingly contested by Aboriginal communities.</li>
+          <li><strong>NAIDOC Week</strong> – Annual celebration of the history and culture of Aboriginal and Torres Strait Islander peoples.</li>
+          <li><strong>Anzac Day</strong> – April 25th remembers soldiers who died at Gallipoli in WWI — a deeply respected day of mourning.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="full-card">
+      <h3>🌿 Landscape</h3>
+      <p>Australia is the sixth-largest country in the world and the driest inhabited continent. The interior is desert and semi-desert — the legendary Outback — while the coasts offer tropical rainforests, coral reefs, white sand beaches and fertile farmlands. Around 80% of its plant and animal species exist nowhere else on Earth, making it one of the most biologically unique places on the planet.</p>
+    </div>
+    <div class="full-card">
+      <h3>🎎 Culture</h3>
+      <p>The Australian culture is relaxed and direct — the "no worries" attitude is completely real. Sport is almost a religion: cricket, Australian Rules Football and rugby dominate the calendar. The cuisine reflects a rich multicultural society with strong Asian and European influences. The barbecue is practically a national institution. Australians are famously friendly and casual, making travellers feel welcome straight away.</p>
+    </div>
+  </div>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<!-- PHILIPPINES -->
+<div id="page-philippines" class="page">
+  <div class="country-hero" style="background: linear-gradient(135deg, #00101c 0%, #002540 50%, #0a1400 100%);">
+    <div class="country-hero-bg"></div>
+    <div class="country-hero-emoji">🇵🇭</div>
+    <div class="country-hero-content">
+      <button class="back-btn" onclick="showPage('home')">← Back to home</button>
+      <h1>🇵🇭 Philippines</h1>
+      <p class="country-hero-sub">7,641 islands of endless adventure</p>
+    </div>
+  </div>
+  <div class="country-content">
+    <div class="kpop-banner">
+      <div class="kpop-icon">💜</div>
+      <div class="kpop-text">
+        <h4>K-pop Connection</h4>
+        <p>The Philippines has one of the most passionate K-pop fan bases in the entire world! Filipino fans are legendary — their organised fan projects, streaming parties and lightstick oceans at concerts are talked about globally. Several Filipino artists have debuted in K-pop groups, and Manila regularly hosts major K-pop concerts and fan events throughout the year.</p>
+      </div>
+    </div>
+    <div class="diary-block">
+      <h2>📖 Travel Diary</h2>
+      <p>The Philippines was the most unexpected surprise of my whole trip. Manila hit me with colour, noise, jeepneys painted like moving artworks, and the warmth of people who genuinely seem happy to see you.</p>
+      <p>In Palawan, I took a boat into the Underground River — a UNESCO World Heritage site where you float in darkness between enormous stalactites, surrounded only by the sound of dripping water and your guide's lamp. Surreal and unforgettable.</p>
+      <p>El Nido was the absolute highlight. Above the water: limestone cliffs draped in jungle. Below: an explosion of coral and colour. I floated for an hour and didn't want to leave. Ever.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>🏛️ Tourist Attractions</h3>
+        <ul>
+          <li><strong>El Nido, Palawan</strong> – Dramatic limestone formations, secret lagoons and the clearest water in Asia.</li>
+          <li><strong>Chocolate Hills, Bohol</strong> – Over 1,200 perfectly rounded hills that turn chocolate brown in the dry season.</li>
+          <li><strong>Intramuros, Manila</strong> – The historic walled city built during Spanish colonial rule, in the heart of the capital.</li>
+          <li><strong>Mayon Volcano</strong> – A near-perfect cone-shaped volcano on Luzon — as beautiful as it is powerful.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>📜 Historical Facts</h3>
+        <ul>
+          <li><strong>Spanish Colonisation</strong> – For over 300 years (1565–1898), the Philippines was under Spanish rule, which brought Catholicism and lasting cultural influence.</li>
+          <li><strong>American Period</strong> – After the Spanish-American War, the Philippines became a US territory, making English a national language.</li>
+          <li><strong>World War II</strong> – Manila was one of the most devastated cities in the Pacific War, with fierce fighting across almost every island.</li>
+          <li><strong>Independence, 1946</strong> – After WWII, the Republic of the Philippines was declared as an independent nation.</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>🎊 Holidays & Traditions</h3>
+        <ul>
+          <li><strong>Sinulog Festival</strong> – A colourful religious festival in Cebu City in honour of the Santo Niño, with huge street dance parades.</li>
+          <li><strong>Pahiyas Festival</strong> – Thanksgiving festival where houses are decorated with rice, vegetables and vivid coloured ornaments.</li>
+          <li><strong>Pasko (Christmas)</strong> – The Philippines celebrates the longest Christmas season in the world — decorations go up as early as September!</li>
+        </ul>
+      </div>
+    </div>
+    <div class="full-card">
+      <h3>🌊 Landscape</h3>
+      <p>The Philippines is an archipelago of 7,641 islands surrounded by the South China Sea, the Pacific Ocean and the Celebes Sea. The country is home to tropical rainforests, active volcanoes, ancient rice terraces and some of the most biodiverse seas in the world — sitting within the Coral Triangle. Typhoons are a regular seasonal phenomenon, making the islands both dramatic and unpredictable in equal measure.</p>
+    </div>
+    <div class="full-card">
+      <h3>🎎 Culture</h3>
+      <p>Filipino culture is a unique blend of Asian, Spanish and American influences. Catholicism plays a central role in daily life. The Filipino people are famous worldwide for their warmth, hospitality and joyfulness — the concept of "bayanihan" (helping your community) is deeply embedded in society. Music, dance and food are everywhere: adobo, kare-kare and lechon are dishes you simply cannot miss.</p>
+    </div>
+  </div>
+  <footer>© 2026 Florissa's World Trip &nbsp;·&nbsp; Made with 💜 for English class</footer>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btn = document.getElementById('nav-' + id);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
