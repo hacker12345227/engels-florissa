@@ -27,14 +27,28 @@
     padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px;
   }
   .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--accent); cursor: pointer; letter-spacing: 0.04em; }
-  .nav-links { display: flex; gap: 0.2rem; flex-wrap: wrap; }
+  .nav-links { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; }
   .nav-links button {
-    background: none; border: none; color: var(--muted);
-    font-family: 'DM Sans', sans-serif; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 0.38rem 0.65rem; border-radius: 4px; cursor: pointer; transition: color 0.2s, background 0.2s;
+    background: none; border: none;
+    padding: 0.28rem 0.5rem; border-radius: 6px; cursor: pointer;
+    transition: transform 0.2s, background 0.2s, opacity 0.2s;
+    position: relative; opacity: 0.6; line-height: 1;
+    display: flex; align-items: center; gap: 0.45rem;
   }
-  .nav-links button:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-  .nav-links button.active { color: var(--accent); }
+  .nav-links button img {
+    width: 28px; height: 19px; border-radius: 3px;
+    object-fit: cover; display: block;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.55);
+  }
+  .nav-links button span {
+    font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    transition: color 0.2s;
+  }
+  .nav-links button:hover { transform: scale(1.06); background: rgba(255,255,255,0.05); opacity: 1; }
+  .nav-links button:hover span { color: var(--text); }
+  .nav-links button.active { opacity: 1; background: rgba(232,132,196,0.10); box-shadow: 0 0 0 1px rgba(232,132,196,0.28); }
+  .nav-links button.active span { color: var(--accent); }
 
   .page { display: none; padding-top: 60px; min-height: 100vh; }
   .page.active { display: block; }
@@ -97,8 +111,17 @@
     padding: 0.2rem 0.55rem; border-radius: 10px;
   }
   .country-card:hover { transform: translateY(-6px); border-color: rgba(232,132,196,0.45); box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
-  .card-flag { width: 100%; height: 118px; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); transition: transform 0.3s; }
-  .country-card:hover .card-flag { transform: scale(1.08); }
+  .card-flag {
+    width: 100%; height: 118px; overflow: hidden;
+    background: rgba(10,8,16,0.6); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s;
+  }
+  .card-flag img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s, opacity 0.3s; opacity: 0.82;
+  }
+  .country-card:hover .card-flag img { transform: scale(1.06); opacity: 1; }
   .card-body { padding: 1.2rem; }
   .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 0.35rem; }
   .card-tagline { font-size: 0.79rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.9rem; }
@@ -115,8 +138,15 @@
 
   /* COUNTRY HERO */
   .country-hero { position: relative; overflow: hidden; height: 300px; display: flex; align-items: flex-end; padding: 2.5rem 3rem; }
-  .country-hero-bg { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 100%); }
-  .country-hero-emoji { position: absolute; right: 3rem; top: 50%; transform: translateY(-50%); font-size: 8rem; opacity: 0.12; user-select: none; pointer-events: none; }
+  .country-hero-bg { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 100%); }
+  .country-hero-flag-bg {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 55%;
+    opacity: 0.15; overflow: hidden;
+  }
+  .country-hero-flag-bg img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: blur(2px) saturate(0.6);
+  }
   .country-hero-content { position: relative; }
   .back-btn {
     background: none; border: 1px solid var(--border); color: var(--muted);
@@ -125,7 +155,12 @@
     display: inline-block; transition: color 0.2s, border-color 0.2s;
   }
   .back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
-  .country-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; line-height: 1; margin-bottom: 0.4rem; }
+  .country-hero-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.4rem; }
+  .country-hero-title img {
+    width: 54px; height: 36px; object-fit: cover;
+    border-radius: 4px; box-shadow: 0 2px 14px rgba(0,0,0,0.7); flex-shrink: 0;
+  }
+  .country-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; line-height: 1; }
   .country-hero-sub { color: var(--muted); font-size: 0.95rem; font-style: italic; }
 
   /* KPOP BANNER */
@@ -162,10 +197,9 @@
   footer { text-align: center; padding: 2rem; font-size: 0.75rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 4rem; }
 
   @media (max-width: 600px) {
-    .nav-links { display: none; }
+    .nav-links button span { display: none; }
     .cards-grid { grid-template-columns: 1fr 1fr; }
     .country-hero { padding: 1.5rem; height: 240px; }
-    .country-hero-emoji { font-size: 5rem; right: 1rem; }
     .country-content { padding: 2rem 1.2rem; }
   }
 </style>
@@ -175,12 +209,29 @@
 <nav>
   <div class="nav-logo" onclick="showPage('home')">✈ Florissa's World Trip</div>
   <div class="nav-links">
-    <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
-    <button onclick="showPage('korea')" id="nav-korea">Korea</button>
-    <button onclick="showPage('japan')" id="nav-japan">Japan</button>
-    <button onclick="showPage('thailand')" id="nav-thailand">Thailand</button>
-    <button onclick="showPage('australia')" id="nav-australia">Australia</button>
-    <button onclick="showPage('philippines')" id="nav-philippines">Philippines</button>
+    <button onclick="showPage('home')" id="nav-home" class="active">
+      <span>Home</span>
+    </button>
+    <button onclick="showPage('korea')" id="nav-korea">
+      <img src="https://flagcdn.com/w40/kr.png" alt="South Korea">
+      <span>Korea</span>
+    </button>
+    <button onclick="showPage('japan')" id="nav-japan">
+      <img src="https://flagcdn.com/w40/jp.png" alt="Japan">
+      <span>Japan</span>
+    </button>
+    <button onclick="showPage('thailand')" id="nav-thailand">
+      <img src="https://flagcdn.com/w40/th.png" alt="Thailand">
+      <span>Thailand</span>
+    </button>
+    <button onclick="showPage('australia')" id="nav-australia">
+      <img src="https://flagcdn.com/w40/au.png" alt="Australia">
+      <span>Australia</span>
+    </button>
+    <button onclick="showPage('philippines')" id="nav-philippines">
+      <img src="https://flagcdn.com/w40/ph.png" alt="Philippines">
+      <span>Philippines</span>
+    </button>
   </div>
 </nav>
 
@@ -202,7 +253,9 @@
     <h2 class="section-title">Five countries, one adventure</h2>
     <div class="cards-grid">
       <div class="country-card featured" onclick="showPage('korea')">
-        <div class="card-flag">🇰🇷</div>
+        <div class="card-flag">
+          <img src="https://flagcdn.com/w320/kr.png" alt="South Korea flag">
+        </div>
         <div class="card-body">
           <div class="card-name">South Korea</div>
           <div class="card-tagline">K-pop, ancient palaces & neon-lit Seoul</div>
@@ -210,7 +263,9 @@
         </div>
       </div>
       <div class="country-card" onclick="showPage('japan')">
-        <div class="card-flag">🇯🇵</div>
+        <div class="card-flag">
+          <img src="https://flagcdn.com/w320/jp.png" alt="Japan flag">
+        </div>
         <div class="card-body">
           <div class="card-name">Japan</div>
           <div class="card-tagline">Tradition meets futuristic cities</div>
@@ -218,7 +273,9 @@
         </div>
       </div>
       <div class="country-card" onclick="showPage('thailand')">
-        <div class="card-flag">🇹🇭</div>
+        <div class="card-flag">
+          <img src="https://flagcdn.com/w320/th.png" alt="Thailand flag">
+        </div>
         <div class="card-body">
           <div class="card-name">Thailand</div>
           <div class="card-tagline">Golden temples & tropical beaches</div>
@@ -226,7 +283,9 @@
         </div>
       </div>
       <div class="country-card" onclick="showPage('australia')">
-        <div class="card-flag">🇦🇺</div>
+        <div class="card-flag">
+          <img src="https://flagcdn.com/w320/au.png" alt="Australia flag">
+        </div>
         <div class="card-body">
           <div class="card-name">Australia</div>
           <div class="card-tagline">Wildlife, outback & Great Barrier Reef</div>
@@ -234,7 +293,9 @@
         </div>
       </div>
       <div class="country-card" onclick="showPage('philippines')">
-        <div class="card-flag">🇵🇭</div>
+        <div class="card-flag">
+          <img src="https://flagcdn.com/w320/ph.png" alt="Philippines flag">
+        </div>
         <div class="card-body">
           <div class="card-name">Philippines</div>
           <div class="card-tagline">7,641 islands of nature & culture</div>
@@ -258,10 +319,15 @@
 <div id="page-korea" class="page">
   <div class="country-hero" style="background: linear-gradient(135deg, #1a0828 0%, #36104e 50%, #0f0a20 100%);">
     <div class="country-hero-bg"></div>
-    <div class="country-hero-emoji">🇰🇷</div>
+    <div class="country-hero-flag-bg">
+      <img src="https://flagcdn.com/w640/kr.png" alt="">
+    </div>
     <div class="country-hero-content">
       <button class="back-btn" onclick="showPage('home')">← Back to home</button>
-      <h1>🇰🇷 South Korea</h1>
+      <div class="country-hero-title">
+        <img src="https://flagcdn.com/w80/kr.png" alt="South Korea flag">
+        <h1>South Korea</h1>
+      </div>
       <p class="country-hero-sub">Where ancient palaces meet K-pop dreams</p>
     </div>
   </div>
@@ -332,10 +398,15 @@
 <div id="page-japan" class="page">
   <div class="country-hero" style="background: linear-gradient(135deg, #200a0a 0%, #420f0f 50%, #180814 100%);">
     <div class="country-hero-bg"></div>
-    <div class="country-hero-emoji">🇯🇵</div>
+    <div class="country-hero-flag-bg">
+      <img src="https://flagcdn.com/w640/jp.png" alt="">
+    </div>
     <div class="country-hero-content">
       <button class="back-btn" onclick="showPage('home')">← Back to home</button>
-      <h1>🇯🇵 Japan</h1>
+      <div class="country-hero-title">
+        <img src="https://flagcdn.com/w80/jp.png" alt="Japan flag">
+        <h1>Japan</h1>
+      </div>
       <p class="country-hero-sub">Where silence and chaos exist side by side</p>
     </div>
   </div>
@@ -396,10 +467,15 @@
 <div id="page-thailand" class="page">
   <div class="country-hero" style="background: linear-gradient(135deg, #0a1a08 0%, #1b3a10 50%, #1a180a 100%);">
     <div class="country-hero-bg"></div>
-    <div class="country-hero-emoji">🇹🇭</div>
+    <div class="country-hero-flag-bg">
+      <img src="https://flagcdn.com/w640/th.png" alt="">
+    </div>
     <div class="country-hero-content">
       <button class="back-btn" onclick="showPage('home')">← Back to home</button>
-      <h1>🇹🇭 Thailand</h1>
+      <div class="country-hero-title">
+        <img src="https://flagcdn.com/w80/th.png" alt="Thailand flag">
+        <h1>Thailand</h1>
+      </div>
       <p class="country-hero-sub">The land of smiles, gold and jungle</p>
     </div>
   </div>
@@ -460,10 +536,15 @@
 <div id="page-australia" class="page">
   <div class="country-hero" style="background: linear-gradient(135deg, #1a0e00 0%, #3d2200 50%, #1a1500 100%);">
     <div class="country-hero-bg"></div>
-    <div class="country-hero-emoji">🇦🇺</div>
+    <div class="country-hero-flag-bg">
+      <img src="https://flagcdn.com/w640/au.png" alt="">
+    </div>
     <div class="country-hero-content">
       <button class="back-btn" onclick="showPage('home')">← Back to home</button>
-      <h1>🇦🇺 Australia</h1>
+      <div class="country-hero-title">
+        <img src="https://flagcdn.com/w80/au.png" alt="Australia flag">
+        <h1>Australia</h1>
+      </div>
       <p class="country-hero-sub">The continent at the edge of the world</p>
     </div>
   </div>
@@ -525,10 +606,15 @@
 <div id="page-philippines" class="page">
   <div class="country-hero" style="background: linear-gradient(135deg, #00101c 0%, #002540 50%, #0a1400 100%);">
     <div class="country-hero-bg"></div>
-    <div class="country-hero-emoji">🇵🇭</div>
+    <div class="country-hero-flag-bg">
+      <img src="https://flagcdn.com/w640/ph.png" alt="">
+    </div>
     <div class="country-hero-content">
       <button class="back-btn" onclick="showPage('home')">← Back to home</button>
-      <h1>🇵🇭 Philippines</h1>
+      <div class="country-hero-title">
+        <img src="https://flagcdn.com/w80/ph.png" alt="Philippines flag">
+        <h1>Philippines</h1>
+      </div>
       <p class="country-hero-sub">7,641 islands of endless adventure</p>
     </div>
   </div>
